@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { Schema } = mongoose;
 
 const NotesSchema = new Schema({
   title: {
@@ -13,7 +14,7 @@ const NotesSchema = new Schema({
     type: String,
   },
   timestamp: {
-    type: String,
+    type: Date,
     default: Date.now,
   },
 });
