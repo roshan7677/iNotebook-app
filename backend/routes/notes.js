@@ -3,6 +3,7 @@ const router = express.Router();
 const fetchuser = require("../middleware/fetchUser");
 const { body, validationResult } = require("express-validator");
 const Note = require("../models/Note");
+const mongoose = require("mongoose");
 // ROUTE 1: Get all the notes of logged in user : GET: "/api/auth/fetchallnotes". Login required.
 
 router.get("/fetchallnotes", fetchuser, async (req, res) => {
@@ -51,7 +52,7 @@ router.post(
   }
 );
 
-// ROUTE 3: Update an existing note : POST: "/api/auth/updatenote". Login required.
+// ROUTE 3: Update an existing note : PUT: "/api/auth/updatenote". Login required.
 router.put(
   "/updatenote/:id",
   fetchuser,
@@ -94,5 +95,33 @@ router.put(
     res.json({ note });
   }
 );
+
+// ROUTE 4: Delete a note : DELETE: "/api/auth/deletenote". Login required.
+router.delete("/deletenote/:id", fetchuser, async (req, res) => {
+  try {
+    // Validate ID
+    const noteId = req.params.id;
+    if (!mongoose.Types.ObjectId.isValid(noteId)) {
+      return res.status(400).json({ error: "Invalid note id" });
+    }
+
+    // Find the note to be deleted
+    let note = await Note.findById(noteId);
+    if (!note) {
+      return res.status(404).send("Invalid note - not found");
+    }
+
+    // Allow deletion only if the user owns this note.
+    if (note.user.toString() !== req.user.id) {
+      return res.status(401).send("Invalid request.");
+    }
+
+    note = await Note.findByIdAndDelete(noteId);
+    res.json({ Success: "Note has been deleted.", note: note });
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).send("Internal server error");
+  }
+});
 
 module.exports = router;
