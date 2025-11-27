@@ -1,7 +1,10 @@
 import React from "react";
+import { useContext } from "react";
+import NoteContext from "../context/notes/NoteContext"
 
 const About = () => {
-  return <div>this is about comp</div>;
+  const a = useContext(NoteContext);
+  return <div>this is about {a.name}</div>;
 };
 
 export default About;
