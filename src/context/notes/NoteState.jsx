@@ -78,11 +78,39 @@ const NoteState = (props) => {
         }
     ]
 
+    //Add a Note
+    const addNote = (title, description, tag) => {
+        // TODO API CALL
+        const note = {
+            "_id": "6927e9c332c41c64cd3de172",
+            "user": "6927e95332c41c64cd3de15f",
+            "title": "Fake added note (Hard coded)",
+            "description": "Fake added note (Hard coded).................",
+            "tag": "personal",
+            "timestamp": "2025-11-27T06:03:47.989Z",
+            "__v": 0
+        };
+        // Append immutably — do not mutate state or use push() result
+        setNotes(prevNotes => [...prevNotes, note]);
+    }
+
+    //Delete a note
+    const deleteNote = (id) => {
+
+
+    }
+
+    // Edit a note  
+    const editNote = (id) => {
+
+    }
+
+
 
     const [notes, setNotes] = useState(notesInitial);
 
     return (
-        <NoteContext.Provider value={{ notes, setNotes }}>
+        <NoteContext.Provider value={{ notes, addNote, deleteNote, editNote }}>
             {props.children}
         </NoteContext.Provider>
     );
