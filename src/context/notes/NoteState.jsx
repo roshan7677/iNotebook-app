@@ -96,8 +96,10 @@ const NoteState = (props) => {
 
     //Delete a note
     const deleteNote = (id) => {
-
-
+        //TODO: API CALL to Delete from Backend too
+        console.log("Deleting the note with this ID " + id);
+        const newNotes = notes.filter((note) => { return note._id !== id })
+        setNotes(newNotes);
     }
 
     // Edit a note  

@@ -5,7 +5,7 @@ import AddNote from './AddNote.jsx';
 
 const Notes = () => {
     const context = useContext(noteContext);
-    const { notes, addNote } = context;
+    const { notes } = context;
     return (
         <>
             <AddNote />
@@ -15,7 +15,7 @@ const Notes = () => {
                     return <NoteItem key={note._id} note={note} />
                 }
                 )}
-            
+
 
 
             </div>
