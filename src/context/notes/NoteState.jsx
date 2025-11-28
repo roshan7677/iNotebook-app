@@ -9,7 +9,6 @@ const NoteState = (props) => {
 
     // Get all notes
     const getNotes = async () => {
-
         const response = await fetch(`${host}/api/notes/fetchallnotes`, {
             method: 'GET',
             headers: {
@@ -18,21 +17,7 @@ const NoteState = (props) => {
             },
         });
         const dataJSON = await response.json();
-        console.log(dataJSON);
         setNotes(dataJSON);
-
-
-        const note = {
-            "_id": "6927e9c332c41c64cd3de172",
-            "user": "6927e95332c41c64cd3de15f",
-            "title": "Fake added note (Hard coded)",
-            "description": "Fake added note (Hard coded).................",
-            "tag": "personal",
-            "timestamp": "2025-11-27T06:03:47.989Z",
-            "__v": 0
-        };
-        // Append immutably  do not mutate state or use push() result
-        setNotes(prevNotes => [...prevNotes, note]);
     }
 
 
@@ -40,8 +25,8 @@ const NoteState = (props) => {
 
     //Add a Note
     const addNote = async (title, description, tag) => {
-        // TODO API CALL
-        await fetch(`${host}/api/notes/addnote/`, {
+        // API CALL to add note
+        const response = await fetch(`${host}/api/notes/addnote/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -50,17 +35,9 @@ const NoteState = (props) => {
             body: JSON.stringify({ title, description, tag })
         });
 
-        const note = {
-            "_id": "6927e9c332c41c64cd3de172",
-            "user": "6927e95332c41c64cd3de15f",
-            "title": "Fake added note (Hard coded)",
-            "description": "Fake added note (Hard coded).................",
-            "tag": "personal",
-            "timestamp": "2025-11-27T06:03:47.989Z",
-            "__v": 0
-        };
-        // Append immutably  do not mutate state or use push() result
-        setNotes(prevNotes => [...prevNotes, note]);
+        const savedNote = await response.json();
+        // Append the saved note returned from backend
+        setNotes(prevNotes => [...prevNotes, savedNote]);
     }
 
     //Delete a note
@@ -83,7 +60,7 @@ const NoteState = (props) => {
     const editNote = async (id, title, description, tag) => {
 
         // API CALL 
-        await fetch(`${host}/api/notes/updatenote/${id}`, {
+        const response = await fetch(`${host}/api/notes/updatenote/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -92,16 +69,11 @@ const NoteState = (props) => {
             body: JSON.stringify({ title, description, tag })
         });
 
-        // Logic to Edit in client
-        for (let i = 0; i < notes.length; i++) {
-            const element = notes[i];
-            if (element._id === id) {
-                element.title = title;
-                element.description = description;
-                element.tag = tag;
-
-            }
-        }
+        const updatedNoteResponse = await response.json();
+        // backend returns { note: <updatedNote> }
+        const updatedNote = updatedNoteResponse.note || updatedNoteResponse;
+        // Update local state immutably
+        setNotes(prevNotes => prevNotes.map(n => n._id === id ? updatedNote : n));
 
     }
     const [notes, setNotes] = useState(notesInitial);

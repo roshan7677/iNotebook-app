@@ -19,7 +19,7 @@ const Notes = () => {
 
     const updateNote = (currentNote) => {
         // Set the selected note in state so the modal fields populate
-        setNote({ id: currentNote._id, etitle: currentNote.etitle, edescription: currentNote.description, etag: currentNote.tag });
+        setNote({ _id: currentNote._id, title: currentNote.title, description: currentNote.description, tag: currentNote.tag });
         // Programmatically create/show the Bootstrap modal instance
         const modalEl = document.getElementById('staticBackdrop');
         if (modalEl && window.bootstrap) {
@@ -38,10 +38,8 @@ const Notes = () => {
         // Close the modal
         const modalEl = document.getElementById('staticBackdrop');
         if (modalEl && window.bootstrap) {
-            const modal = window.bootstrap.Modal.getInstance(modalEl);
-            if (modal) {
-                modal.hide();
-            }
+            const modal = window.bootstrap.Modal.getInstance(modalEl) || new window.bootstrap.Modal(modalEl);
+            modal.hide();
         }
         // Clear the form
         setNote({ _id: "", title: "", description: "", tag: "" });
